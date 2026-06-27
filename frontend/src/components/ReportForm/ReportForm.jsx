@@ -3,7 +3,6 @@ import { motion, useMotionValue, useSpring, useMotionValueEvent } from 'framer-m
 import styles from './ReportForm.module.css';
 import PhotoUpload from '../PhotoUpload/PhotoUpload.jsx';
 import RoadPicker from '../RoadPicker/RoadPicker.jsx';
-import { useGeolocation } from '../../hooks/useGeolocation.js';
 import { ISSUES } from '../../constants/categories.js';
 import { api } from '../../api/client.js';
 
@@ -100,7 +99,6 @@ function fadeUp(delay = 0) {
 }
 
 export default function ReportForm({ onPublished, showToast }) {
-  const { location, status: locStatus, areaGuess, locate } = useGeolocation();
   const [roadScore, setRoadScore] = useState(null);
   const [areaLabel, setAreaLabel] = useState('');
   const [issues, setIssues] = useState(new Set());
@@ -119,16 +117,11 @@ export default function ReportForm({ onPublished, showToast }) {
   const scoreMotionVal = useMotionValue(0);
   const springScore = useSpring(scoreMotionVal, { stiffness: 250, damping: 20 });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { locate(); }, []);
-
   useEffect(() => {
     scoreMotionVal.set(roadScore ?? 0);
   }, [roadScore, scoreMotionVal]);
 
   useMotionValueEvent(springScore, 'change', (v) => setDisplayScore(Math.min(100, Math.max(0, Math.round(v)))));
-
-  if (areaGuess && !areaLabel) setAreaLabel(areaGuess);
 
   function handleIssueToggle(key) {
     setIssues((prev) => {
@@ -174,12 +167,12 @@ export default function ReportForm({ onPublished, showToast }) {
   }
 
   async function handleSubmit() {
-    if (!location) { showToast('Pin your location first.'); return; }
+    if (!manualLocation) { showToast('Search and select your road first.'); return; }
     if (roadScore === null) { showToast('Rate the road first.'); return; }
     setSubmitting(true);
     try {
-      const reportLat = pickedRoad?.lat ?? location.lat;
-      const reportLng = pickedRoad?.lng ?? location.lng;
+      const reportLat = pickedRoad?.lat ?? manualLocation.lat;
+      const reportLng = pickedRoad?.lng ?? manualLocation.lng;
       const report = await api.createReport({
         lat: reportLat, lng: reportLng,
         areaLabel: areaLabel.trim() || pickedRoad?.name || 'Unnamed location',
@@ -196,7 +189,7 @@ export default function ReportForm({ onPublished, showToast }) {
     }
   }
 
-  const effectiveLocation = location || manualLocation;
+  const effectiveLocation = manualLocation;
   const fillPct = `${roadScore ?? 0}%`;
   const label = scoreLabel(roadScore);
 
@@ -211,17 +204,8 @@ export default function ReportForm({ onPublished, showToast }) {
 
         <motion.div className={styles.section} {...fadeUp(0.12)}>
           <p className={styles.sectionLabel}>Road Location</p>
-          {(locStatus === 'idle' || locStatus === 'denied') && !manualLocation && (
-            <motion.button type="button" className={styles.locBtn} onClick={locate} whileTap={{ scale: 0.98 }}>
-              Pin my location
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-            </motion.button>
-          )}
-          {locStatus === 'denied' && !manualLocation && (
+          {!manualLocation && (
             <div className={styles.locSearchWrap}>
-              <p className={styles.hint}>Location blocked — search your road or sector instead.</p>
               <div className={styles.locSearchBox}>
                 <input
                   type="text"
@@ -241,12 +225,6 @@ export default function ReportForm({ onPublished, showToast }) {
                   ))}
                 </ul>
               )}
-            </div>
-          )}
-          {locStatus === 'locating' && (
-            <div className={styles.locRow}>
-              <span className={styles.spinner} />
-              <span className={styles.locText}>Finding your location…</span>
             </div>
           )}
           {manualLocation && (

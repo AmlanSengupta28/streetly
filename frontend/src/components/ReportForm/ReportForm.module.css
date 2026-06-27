@@ -17,22 +17,7 @@
 .optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--label); }
 
 /* ── Location ────────────────────────────────────────── */
-.locBtn {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%; padding: 14px 16px; background: var(--surface-2);
-  border: none; border-radius: 12px; font-size: 15px; font-weight: 500;
-  font-family: var(--font-body); color: var(--ink-soft); cursor: pointer;
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-}
-.locRow { display: flex; align-items: center; gap: 9px; padding: 4px 0; }
-.locText { font-size: 15px; color: var(--ink-soft); }
-.spinner {
-  width: 14px; height: 14px; border: 2px solid var(--line);
-  border-top-color: var(--ink); border-radius: 50%;
-  animation: spin 0.7s linear infinite; flex-shrink: 0;
-}
 @keyframes spin { to { transform: rotate(360deg); } }
-.hint { font-size: 13px; color: var(--bad); margin-top: 8px; margin-bottom: 10px; }
 
 /* ── Manual location search (shown when GPS denied) ─── */
 .locSearchWrap { margin-top: 4px; }
