@@ -146,7 +146,7 @@ export default function ReportForm({ onPublished, showToast }) {
       setLocSearching(true);
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q + ' Gurgaon')}`
+          `https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=in&q=${encodeURIComponent(q)}`
         );
         const data = await res.json();
         setLocResults(data);
@@ -219,7 +219,7 @@ export default function ReportForm({ onPublished, showToast }) {
                 <input
                   type="text"
                   className={styles.locSearchInput}
-                  placeholder="e.g. Sector 49, DLF Phase 2…"
+                  placeholder="e.g. Bandra, Koramangala, Connaught Place…"
                   value={locSearch}
                   onChange={(e) => handleLocSearch(e.target.value)}
                 />

@@ -26,4 +26,4 @@ export const ISSUES = [
   { key: 'footpath',     label: 'Footpath Issues',       chipLabel: 'No Footpath', desc: 'Footpath broken, blocked, or missing' },
 ];
 
-export const GURGAON_CENTER = [28.4595, 77.0266];
+export const INDIA_CENTER = [20.5937, 78.9629];

@@ -5,8 +5,7 @@ import styles from './LocationSearch.module.css';
  * Geocoding search — turns typed text into coordinates and re-centers
  * the map there. Distinct from SearchBar: this looks up *places*
  * (via OpenStreetMap's free Nominatim service), not existing reports.
- * Scoped to "near Gurgaon" via a viewbox bias so "Sector 14" doesn't
- * resolve to a Sector 14 somewhere else in the world.
+ * Scoped to India via countrycodes so results stay within the country.
  */
 export default function LocationSearch({ onLocate }) {
   const [value, setValue] = useState('');
@@ -20,8 +19,7 @@ export default function LocationSearch({ onLocate }) {
       const params = new URLSearchParams({
         format: 'json',
         q: value.trim(),
-        viewbox: '76.9,28.55,77.15,28.35', // rough Gurgaon bounding box
-        bounded: '0', // bias toward the box, don't hard-exclude results outside it
+        countrycodes: 'in',
         limit: '1',
       });
       const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`);
@@ -44,7 +42,7 @@ export default function LocationSearch({ onLocate }) {
         <input
           type="text"
           className={styles.input}
-          placeholder="Search a place, e.g. Sector 49"
+          placeholder="Search a city, area or street…"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />

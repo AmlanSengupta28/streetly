@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import styles from './MapView.module.css';
 import LocationSearch from '../LocationSearch/LocationSearch.jsx';
 import { scoreColor } from '../../utils/score.js';
-import { GURGAON_CENTER } from '../../constants/categories.js';
+import { INDIA_CENTER } from '../../constants/categories.js';
 
 function pinIcon(score) {
   return L.divIcon({
@@ -43,7 +43,7 @@ export default function MapView({ reports, onSelect, flyToTarget, onSearchLocati
     <>
       <LocationSearch onLocate={(lat, lng, label) => onSearchLocation({ lat, lng, label })} />
       <div className={styles.mapWrap}>
-        <MapContainer center={GURGAON_CENTER} zoom={12} style={{ width: '100%', height: '100%' }}>
+        <MapContainer center={INDIA_CENTER} zoom={5} style={{ width: '100%', height: '100%' }}>
           <ResizeOnShow />
           <FlyTo target={flyToTarget} />
           <TileLayer
