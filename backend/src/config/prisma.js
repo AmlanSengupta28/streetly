@@ -1,0 +1,14 @@
+import { PrismaClient } from '@prisma/client';
+
+// Singleton so dev hot-reload doesn't exhaust Postgres connections.
+const globalForPrisma = globalThis;
+
+export const prisma =
+  globalForPrisma.__streetlyPrisma__ ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.__streetlyPrisma__ = prisma;
+}

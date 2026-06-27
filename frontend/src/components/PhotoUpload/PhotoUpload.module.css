@@ -1,0 +1,45 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hiddenInput { display: none; }
+.slot {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  border: none;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.slot svg { width: 28px; height: 28px; color: var(--label); }
+.slot:active { background: #ebebeb; }
+.slot:active svg { color: var(--ink); }
+.slotUploading { pointer-events: none; }
+.spinner {
+  width: 22px; height: 22px;
+  border: 2px solid var(--line);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.thumb { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
+.thumbImg { width: 96px; height: 96px; border-radius: 24px; object-fit: cover; display: block; }
+.removeBtn {
+  position: absolute; top: -6px; right: -6px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--ink); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0; touch-action: manipulation;
+}
+.removeBtn svg { width: 11px; height: 11px; color: #ffffff; }
+.errorText { font-size: 13px; color: var(--bad); }
