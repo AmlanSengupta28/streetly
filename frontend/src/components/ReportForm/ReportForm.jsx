@@ -227,18 +227,6 @@ export default function ReportForm({ onPublished, showToast }) {
               )}
             </div>
           )}
-          {manualLocation && (
-            <div className={styles.manualLocRow}>
-              <span className={styles.manualLocLabel}>{areaLabel.split(',').slice(0, 2).join(',').trim()}</span>
-              <button
-                type="button"
-                className={styles.manualLocChange}
-                onClick={() => { setManualLocation(null); setPickedRoad(null); setAreaLabel(''); }}
-              >
-                Change
-              </button>
-            </div>
-          )}
           {manualLocation && effectiveLocation && (
             <RoadPicker
               key={mapKey}
