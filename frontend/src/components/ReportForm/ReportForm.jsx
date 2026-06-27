@@ -108,6 +108,7 @@ export default function ReportForm({ onPublished, showToast }) {
   const [areaLabel, setAreaLabel] = useState('');
   const [issues, setIssues] = useState(new Set());
   const [othersText, setOthersText] = useState('');
+  const [othersInputFocused, setOthersInputFocused] = useState(false);
   const [comment, setComment] = useState('');
   const [photoUrl, setPhotoUrl] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -297,17 +298,30 @@ export default function ReportForm({ onPublished, showToast }) {
             </motion.button>
           </div>
           {issues.has('others') && (
-            <motion.input
+            <motion.div
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              type="text"
-              className={styles.othersInput}
-              placeholder="Describe the issue…"
-              value={othersText}
-              onChange={(e) => setOthersText(e.target.value)}
-              autoFocus
-            />
+              className={styles.othersInputWrap}
+            >
+              <input
+                type="text"
+                className={styles.othersInput}
+                placeholder="Describe the issue…"
+                value={othersText}
+                onChange={(e) => setOthersText(e.target.value)}
+                onFocus={() => setOthersInputFocused(true)}
+                onBlur={() => setOthersInputFocused(false)}
+                autoFocus
+              />
+              {!othersInputFocused && othersText.trim() && (
+                <span className={styles.othersTick}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+              )}
+            </motion.div>
           )}
         </motion.div>
 
