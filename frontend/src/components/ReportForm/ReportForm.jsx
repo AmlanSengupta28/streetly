@@ -249,6 +249,18 @@ export default function ReportForm({ onPublished, showToast }) {
               <span className={styles.locText}>Finding your location…</span>
             </div>
           )}
+          {manualLocation && (
+            <div className={styles.manualLocRow}>
+              <span className={styles.manualLocLabel}>{areaLabel.split(',').slice(0, 2).join(',').trim()}</span>
+              <button
+                type="button"
+                className={styles.manualLocChange}
+                onClick={() => { setManualLocation(null); setPickedRoad(null); setAreaLabel(''); }}
+              >
+                Change
+              </button>
+            </div>
+          )}
           {(locStatus === 'success' || manualLocation) && effectiveLocation && (
             <RoadPicker
               key={mapKey}

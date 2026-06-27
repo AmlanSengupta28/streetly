@@ -59,6 +59,16 @@
 }
 .locResult:last-child { border-bottom: none; }
 .locResult:active { background: var(--surface-2); }
+.manualLocRow {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--surface-2); border-radius: 12px; margin-bottom: 10px;
+}
+.manualLocLabel { font-size: 14px; color: var(--ink); font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manualLocChange {
+  flex-shrink: 0; margin-left: 12px; padding: 0; background: none; border: none;
+  font-size: 13px; font-weight: 600; color: var(--ink-soft); cursor: pointer;
+  text-decoration: underline; font-family: var(--font-body);
+}
 
 /* ── Score ───────────────────────────────────────────── */
 .scoreBlock { display: flex; align-items: flex-end; gap: 5px; margin-bottom: 10px; }
