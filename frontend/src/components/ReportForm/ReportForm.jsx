@@ -239,7 +239,7 @@ export default function ReportForm({ onPublished, showToast }) {
               </button>
             </div>
           )}
-          {(locStatus === 'success' || manualLocation) && effectiveLocation && (
+          {manualLocation && effectiveLocation && (
             <RoadPicker
               key={mapKey}
               center={effectiveLocation}
