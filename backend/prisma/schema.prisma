@@ -1,0 +1,37 @@
+// Prisma schema for Streetly.
+//
+// Geospatial note: PostGIS gives the best "nearby" query performance, but
+// Prisma's type-safe client doesn't model PostGIS geography columns well.
+// So this schema keeps lat/lng as plain Floats (simple, type-safe, easy to
+// read), and a one-time raw SQL script (prisma/sql/enable_postgis.sql)
+// adds a GiST expression index on top of those same columns. Nearby
+// queries run as raw SQL via ST_DWithin — see reports.service.js.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  lat        Float
+  lng        Float
+  areaLabel  String
+  photoUrl   String?
+  ratings    Json     // { cleanliness: 1-5, electricity: 1-5, ... }
+  tags       String[]
+  comment    String?
+  score      Int      // 0-100, derived from ratings, stored for fast sort/filter
+  deviceId   String?  // anonymous client fingerprint, used only for rate limiting
+  flagged    Boolean  @default(false)
+  flagCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([score])
+}

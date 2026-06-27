@@ -1,0 +1,25 @@
+.mapWrap {
+  width: 100%;
+  height: calc(100vh - 230px);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.pin {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.72rem;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.hint {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}

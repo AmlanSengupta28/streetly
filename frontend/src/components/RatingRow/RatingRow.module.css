@@ -1,0 +1,33 @@
+.row {
+  margin-bottom: 14px;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.value {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.ticks {
+  display: flex;
+  gap: 4px;
+}
+.tick {
+  flex: 1;
+  height: 26px;
+  border: none;
+  border-radius: 3px;
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.filledLow { background: var(--bad); }
+.filledMid { background: var(--warn); }
+.filledHigh { background: var(--good); }

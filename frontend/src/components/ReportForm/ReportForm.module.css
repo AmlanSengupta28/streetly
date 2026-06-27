@@ -1,0 +1,114 @@
+/* ── Form shell ──────────────────────────────────────── */
+.form { display: flex; flex-direction: column; min-height: 100%; }
+.container { padding: 0 24px; flex: 1; }
+
+/* ── Hero ────────────────────────────────────────────── */
+.hero { padding: 4px 0 4px; border-bottom: 1px solid var(--line); }
+.heroTitle {
+  font-family: var(--font-body);
+  font-size: 2.7rem; font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.5px; color: var(--ink); margin: 12px 0 12px;
+}
+.heroSub { font-size: 16px; font-weight: 400; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+
+/* ── Flat sections ───────────────────────────────────── */
+.section { padding: 28px 0; border-bottom: 1px solid var(--line); }
+.sectionLabel { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--label); margin: 0 0 14px; }
+.optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--label); }
+
+/* ── Location ────────────────────────────────────────── */
+.locBtn {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 16px; background: var(--surface-2);
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 500;
+  font-family: var(--font-body); color: var(--ink-soft); cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.locRow { display: flex; align-items: center; gap: 9px; padding: 4px 0; }
+.locText { font-size: 15px; color: var(--ink-soft); }
+.spinner {
+  width: 14px; height: 14px; border: 2px solid var(--line);
+  border-top-color: var(--ink); border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.hint { font-size: 13px; color: var(--bad); margin-top: 8px; }
+
+/* ── Score ───────────────────────────────────────────── */
+.scoreBlock { display: flex; align-items: flex-end; gap: 5px; margin-bottom: 22px; }
+.scoreNumber {
+  font-family: var(--font-body); font-size: 76px; font-weight: 800;
+  line-height: 1; letter-spacing: -4px; color: var(--ink); min-width: 2.25ch;
+}
+.scoreBadge { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+
+/* ── Slider ──────────────────────────────────────────── */
+.slider {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+  border-radius: 999px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, var(--ink) 0%, var(--ink) var(--fill), var(--line) var(--fill), var(--line) 100%);
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--ink); cursor: pointer;
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+}
+.slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--ink);
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 0 1.5px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+}
+.sliderEndLabels {
+  display: flex; justify-content: space-between; margin-top: 10px;
+  font-size: 12px; font-family: var(--font-mono); color: var(--label);
+}
+@keyframes hintBreath {
+  0%, 100% { opacity: 0.35; color: var(--label); }
+  50%       { opacity: 1;    color: var(--ink-soft); }
+}
+.sliderHint {
+  display: block; font-size: 13px; font-family: var(--font-mono);
+  letter-spacing: 0.06em; margin-bottom: 8px;
+  animation: hintBreath 2.2s ease-in-out infinite;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sliderHintGone { animation: none; opacity: 0; }
+
+/* ── Problem chips ───────────────────────────────────── */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; height: 44px; padding: 0 14px;
+  background: var(--surface-2); border: none; border-radius: 999px;
+  font-size: 13px; font-family: var(--font-body); font-weight: 500; color: var(--ink);
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; white-space: nowrap;
+}
+.chipIcon { flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; }
+.chipIcon svg { width: 16px; height: 16px; }
+.chipActive { background: var(--ink); color: #ffffff; }
+
+/* ── Photo ───────────────────────────────────────────── */
+.photoArea { display: flex; justify-content: flex-start; margin-bottom: 10px; }
+.photoCaption { font-size: 13px; color: var(--label); margin: 0; }
+
+/* ── Textarea ────────────────────────────────────────── */
+.textarea {
+  width: 100%; border: 1.5px solid var(--line); background: var(--surface-2);
+  border-radius: 12px; padding: 14px 16px; font-family: var(--font-body);
+  font-size: 15px; color: var(--ink); resize: none; box-sizing: border-box;
+}
+.textarea:focus { outline: none; border-color: var(--ink); }
+.textarea::placeholder { color: var(--label); }
+
+/* ── Sticky publish CTA ──────────────────────────────── */
+.ctaWrap {
+  position: sticky; bottom: 0; padding: 10px 24px 16px;
+  background: linear-gradient(to top, #ffffff 78%, transparent); z-index: 5;
+}
+.ctaBtn {
+  width: 100%; height: 56px; background: var(--ink); color: #ffffff; border: none;
+  border-radius: 18px; font-size: 16px; font-weight: 600; font-family: var(--font-body);
+  letter-spacing: 0.01em; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 10px; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.ctaBtn:disabled { opacity: 0.4; }

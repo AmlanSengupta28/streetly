@@ -1,0 +1,17 @@
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f6f6f6;
+  --ink: #000000;
+  --ink-soft: #737373;
+  --label: #a3a3a3;
+  --good: #2F7A4F;
+  --warn: #C97C0A;
+  --bad: #B73B30;
+  --line: #ececec;
+  --radius: 12px;
+
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}

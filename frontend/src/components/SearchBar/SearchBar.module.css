@@ -1,0 +1,28 @@
+.wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.input {
+  flex: 1;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 9px 10px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+.input:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+.clearBtn {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}

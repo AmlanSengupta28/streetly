@@ -1,0 +1,22 @@
+.plate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  width: fit-content;
+  border-left: 5px solid var(--plate-color, var(--good));
+}
+.num {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.den {
+  font-size: 0.7rem;
+  color: #C9C6B8;
+}
