@@ -21,7 +21,7 @@ export default function App() {
   useEffect(() => { fetchRecent(); }, [fetchRecent]);
 
   useLayoutEffect(() => {
-    if (mainRef.current) mainRef.current.scrollTop = 0;
+    window.scrollTo(0, 0);
   }, [view]);
 
   const showToast = useCallback((msg) => {
