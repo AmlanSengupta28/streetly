@@ -77,7 +77,7 @@ export default function FeedList({ reports, onSelect, onRequestNearby, onSearch,
           <div>
             {isSearching
               ? 'Try a different area name or tag.'
-              : 'Be the first to flag something on your street.'}
+              : 'Be the first to flag something on your road.'}
           </div>
         </div>
       )}

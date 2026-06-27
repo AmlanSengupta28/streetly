@@ -170,8 +170,8 @@ export default function ReportForm({ onPublished, showToast }) {
       <div className={styles.container}>
 
         <motion.div className={styles.hero} {...fadeUp(0.06)}>
-          <h2 className={styles.heroTitle}>Score the<br />Street</h2>
-          <p className={styles.heroSub}>Build better streets through community feedback</p>
+          <h2 className={styles.heroTitle}>Score the<br />Road</h2>
+          <p className={styles.heroSub}>Build better roads through community feedback</p>
         </motion.div>
 
         <motion.div className={styles.section} {...fadeUp(0.12)}>
