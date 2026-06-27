@@ -16,8 +16,13 @@ export default function App() {
   const toastTimer = useRef(null);
 
   const { reports, fetchRecent, fetchNearby, fetchSearch, addReport } = useReports();
+  const mainRef = useRef(null);
 
   useEffect(() => { fetchRecent(); }, [fetchRecent]);
+
+  useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+  }, [view]);
 
   const showToast = useCallback((msg) => {
     setToastMessage(msg);
@@ -44,7 +49,7 @@ export default function App() {
         </button>
       </header>
 
-      <main className={styles.main}>
+      <main className={styles.main} ref={mainRef}>
         {view === 'report' && (
           <ReportForm onPublished={handlePublished} showToast={showToast} />
         )}
