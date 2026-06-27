@@ -40,7 +40,7 @@ export default function App() {
             <rect x="3" y="14" width="7" height="7" rx="1"/>
             <rect x="14" y="14" width="7" height="7" rx="1"/>
           </svg>
-          <h1 className={styles.title}>Streetly</h1>
+          <h1 className={styles.title}>RashRoad</h1>
         </button>
       </header>
 

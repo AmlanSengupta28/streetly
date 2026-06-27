@@ -175,7 +175,7 @@ export default function ReportForm({ onPublished, showToast }) {
         </motion.div>
 
         <motion.div className={styles.section} {...fadeUp(0.12)}>
-          <p className={styles.sectionLabel}>Street Location</p>
+          <p className={styles.sectionLabel}>Road Location</p>
           {(locStatus === 'idle' || locStatus === 'denied') && (
             <motion.button type="button" className={styles.locBtn} onClick={locate} whileTap={{ scale: 0.98 }}>
               Pin my location
@@ -202,7 +202,7 @@ export default function ReportForm({ onPublished, showToast }) {
         </motion.div>
 
         <motion.div className={styles.section} {...fadeUp(0.18)}>
-          <p className={styles.sectionLabel}>Street Condition</p>
+          <p className={styles.sectionLabel}>Road Condition</p>
           <div className={styles.scoreBlock}>
             <span className={styles.scoreNumber} style={{ color: scoreColor(roadScore) }}>
               {roadScore === null ? '00' : displayScore}

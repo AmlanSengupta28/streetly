@@ -3,7 +3,7 @@ export const CATEGORIES = [
   { key: 'electricity', label: 'Electricity Supply' },
   { key: 'water', label: 'Water Supply' },
   { key: 'dust', label: 'Dust & Air' },
-  { key: 'roads', label: 'Street Condition' },
+  { key: 'roads', label: 'Road Condition' },
   { key: 'drainage', label: 'Drainage' },
 ];
 
