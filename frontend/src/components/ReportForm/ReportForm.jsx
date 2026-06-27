@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useMotionValueEvent } from 'framer-motion';
 import styles from './ReportForm.module.css';
 import PhotoUpload from '../PhotoUpload/PhotoUpload.jsx';
@@ -110,6 +110,11 @@ export default function ReportForm({ onPublished, showToast }) {
   const [mapKey, setMapKey] = useState(0);
   const [pickedRoad, setPickedRoad] = useState(null);
   const [displayScore, setDisplayScore] = useState(0);
+  const [manualLocation, setManualLocation] = useState(null);
+  const [locSearch, setLocSearch] = useState('');
+  const [locResults, setLocResults] = useState([]);
+  const [locSearching, setLocSearching] = useState(false);
+  const locSearchTimer = useRef(null);
 
   const scoreMotionVal = useMotionValue(0);
   const springScore = useSpring(scoreMotionVal, { stiffness: 250, damping: 20 });
@@ -133,9 +138,38 @@ export default function ReportForm({ onPublished, showToast }) {
     });
   }
 
+  async function handleLocSearch(q) {
+    setLocSearch(q);
+    clearTimeout(locSearchTimer.current);
+    if (!q.trim()) { setLocResults([]); return; }
+    locSearchTimer.current = setTimeout(async () => {
+      setLocSearching(true);
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q + ' Gurgaon')}`
+        );
+        const data = await res.json();
+        setLocResults(data);
+      } catch {
+        // silent
+      } finally {
+        setLocSearching(false);
+      }
+    }, 450);
+  }
+
+  function handleLocPick(result) {
+    const loc = { lat: parseFloat(result.lat), lng: parseFloat(result.lon) };
+    setManualLocation(loc);
+    setAreaLabel(result.display_name.split(',').slice(0, 2).join(',').trim());
+    setLocResults([]);
+    setLocSearch('');
+  }
+
   function resetForm() {
     setRoadScore(null); setAreaLabel(''); setIssues(new Set());
     setComment(''); setPhotoUrl(null); setPickedRoad(null);
+    setManualLocation(null); setLocSearch(''); setLocResults([]);
     setMapKey((k) => k + 1); scoreMotionVal.set(0);
   }
 
@@ -162,6 +196,7 @@ export default function ReportForm({ onPublished, showToast }) {
     }
   }
 
+  const effectiveLocation = location || manualLocation;
   const fillPct = `${roadScore ?? 0}%`;
   const label = scoreLabel(roadScore);
 
@@ -176,7 +211,7 @@ export default function ReportForm({ onPublished, showToast }) {
 
         <motion.div className={styles.section} {...fadeUp(0.12)}>
           <p className={styles.sectionLabel}>Road Location</p>
-          {(locStatus === 'idle' || locStatus === 'denied') && (
+          {(locStatus === 'idle' || locStatus === 'denied') && !manualLocation && (
             <motion.button type="button" className={styles.locBtn} onClick={locate} whileTap={{ scale: 0.98 }}>
               Pin my location
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -184,17 +219,40 @@ export default function ReportForm({ onPublished, showToast }) {
               </svg>
             </motion.button>
           )}
-          {locStatus === 'denied' && <p className={styles.hint}>Location blocked — enable it in browser settings.</p>}
+          {locStatus === 'denied' && !manualLocation && (
+            <div className={styles.locSearchWrap}>
+              <p className={styles.hint}>Location blocked — search your road or sector instead.</p>
+              <div className={styles.locSearchBox}>
+                <input
+                  type="text"
+                  className={styles.locSearchInput}
+                  placeholder="e.g. Sector 49, DLF Phase 2…"
+                  value={locSearch}
+                  onChange={(e) => handleLocSearch(e.target.value)}
+                />
+                {locSearching && <span className={styles.locSearchSpinner} />}
+              </div>
+              {locResults.length > 0 && (
+                <ul className={styles.locResults}>
+                  {locResults.map((r, i) => (
+                    <li key={i} className={styles.locResult} onClick={() => handleLocPick(r)}>
+                      {r.display_name.split(',').slice(0, 3).join(', ')}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
           {locStatus === 'locating' && (
             <div className={styles.locRow}>
               <span className={styles.spinner} />
               <span className={styles.locText}>Finding your location…</span>
             </div>
           )}
-          {locStatus === 'success' && location && (
+          {(locStatus === 'success' || manualLocation) && effectiveLocation && (
             <RoadPicker
               key={mapKey}
-              center={location}
+              center={effectiveLocation}
               locationLabel={areaLabel.split(',')[0].trim()}
               onRoadSelect={(road) => { setPickedRoad(road); if (road.name) setAreaLabel(road.name); }}
             />
@@ -211,9 +269,6 @@ export default function ReportForm({ onPublished, showToast }) {
               {label || ''}
             </span>
           </div>
-          <span className={`${styles.sliderHint} ${roadScore !== null ? styles.sliderHintGone : ''}`}>
-            drag to score
-          </span>
           <input
             type="range" min="0" max="100"
             className={styles.slider}
@@ -223,6 +278,7 @@ export default function ReportForm({ onPublished, showToast }) {
           />
           <div className={styles.sliderEndLabels}>
             <span>Critical</span>
+            <span className={`${styles.sliderHint} ${roadScore !== null ? styles.sliderHintGone : ''}`}>drag to score</span>
             <span>Excellent</span>
           </div>
         </motion.div>

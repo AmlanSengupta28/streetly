@@ -55,7 +55,7 @@
 
 /* ── Padded view wrapper (map / feed views) ──────────── */
 .viewPad {
-  padding: 0 16px;
+  padding: 12px 16px 0;
 }
 
 /* ── Section title (map / feed views) ───────────────── */
