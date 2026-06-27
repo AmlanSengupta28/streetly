@@ -99,6 +99,16 @@
 .chipIcon svg { width: 14px; height: 14px; }
 .chipActive { background: var(--ink); color: #ffffff; }
 
+/* ── Others input ────────────────────────────────────── */
+.othersInput {
+  margin-top: 12px; width: 100%; padding: 12px 16px;
+  background: var(--surface-2); border: 1.5px solid var(--line);
+  border-radius: 12px; font-size: 15px; font-family: var(--font-body);
+  color: var(--ink); box-sizing: border-box;
+}
+.othersInput:focus { outline: none; border-color: var(--ink); }
+.othersInput::placeholder { color: var(--label); }
+
 /* ── Photo ───────────────────────────────────────────── */
 .photoArea { display: flex; justify-content: flex-start; margin-bottom: 10px; }
 .photoCaption { font-size: 13px; color: var(--label); margin: 0; }

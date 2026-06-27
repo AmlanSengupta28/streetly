@@ -54,6 +54,11 @@ const ISSUE_ICONS = {
       <path d="M7 6v7M13 6v7"/>
     </svg>
   ),
+  others: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+    </svg>
+  ),
 };
 
 function scoreLabel(score) {
@@ -102,6 +107,7 @@ export default function ReportForm({ onPublished, showToast }) {
   const [roadScore, setRoadScore] = useState(null);
   const [areaLabel, setAreaLabel] = useState('');
   const [issues, setIssues] = useState(new Set());
+  const [othersText, setOthersText] = useState('');
   const [comment, setComment] = useState('');
   const [photoUrl, setPhotoUrl] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -161,7 +167,7 @@ export default function ReportForm({ onPublished, showToast }) {
 
   function resetForm() {
     setRoadScore(null); setAreaLabel(''); setIssues(new Set());
-    setComment(''); setPhotoUrl(null); setPickedRoad(null);
+    setOthersText(''); setComment(''); setPhotoUrl(null); setPickedRoad(null);
     setManualLocation(null); setLocSearch(''); setLocResults([]);
     setMapKey((k) => k + 1); scoreMotionVal.set(0);
   }
@@ -173,11 +179,13 @@ export default function ReportForm({ onPublished, showToast }) {
     try {
       const reportLat = pickedRoad?.lat ?? manualLocation.lat;
       const reportLng = pickedRoad?.lng ?? manualLocation.lng;
+      const extraNote = issues.has('others') && othersText.trim() ? `Other: ${othersText.trim()}` : '';
+      const fullComment = [comment.trim(), extraNote].filter(Boolean).join('\n');
       const report = await api.createReport({
         lat: reportLat, lng: reportLng,
         areaLabel: areaLabel.trim() || pickedRoad?.name || 'Unnamed location',
         photoUrl, ratings: {}, tags: Array.from(issues),
-        comment: comment.trim(), score: roadScore,
+        comment: fullComment, score: roadScore,
       });
       showToast('Report published.');
       onPublished(report);
@@ -261,7 +269,7 @@ export default function ReportForm({ onPublished, showToast }) {
           </div>
         </motion.div>
 
-        <motion.div className={styles.section} {...fadeUp(0.24)}>
+        <motion.div className={styles.section} style={{ paddingBottom: '36px' }} {...fadeUp(0.24)}>
           <p className={styles.sectionLabel}>Problems</p>
           <div className={styles.chips}>
             {ISSUES.map((issue) => {
@@ -278,10 +286,32 @@ export default function ReportForm({ onPublished, showToast }) {
                 </motion.button>
               );
             })}
+            <motion.button
+              type="button"
+              className={`${styles.chip} ${issues.has('others') ? styles.chipActive : ''}`}
+              onClick={() => handleIssueToggle('others')}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span className={styles.chipIcon}>{ISSUE_ICONS.others}</span>
+              Others
+            </motion.button>
           </div>
+          {issues.has('others') && (
+            <motion.input
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              type="text"
+              className={styles.othersInput}
+              placeholder="Describe the issue…"
+              value={othersText}
+              onChange={(e) => setOthersText(e.target.value)}
+              autoFocus
+            />
+          )}
         </motion.div>
 
-        <motion.div className={styles.section} {...fadeUp(0.3)}>
+        <motion.div className={styles.section} style={{ paddingTop: '36px' }} {...fadeUp(0.3)}>
           <p className={styles.sectionLabel}>Photo <span className={styles.optional}>(optional)</span></p>
           <div className={styles.photoArea}><PhotoUpload onUploaded={setPhotoUrl} /></div>
           <p className={styles.photoCaption}>Photos help authorities act faster</p>
