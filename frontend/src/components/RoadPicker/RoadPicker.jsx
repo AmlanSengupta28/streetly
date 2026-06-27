@@ -105,9 +105,9 @@ async function getRoadGeometry(wayId, name, lat, lng, signal) {
   }
 
   const overpassEndpoints = [
-    'https://overpass-api.de/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
     'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass-api.de/api/interpreter',
   ];
 
   let res;
