@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useLayoutEffect, useState, useCallback, useRef } from 'react';
 import styles from './App.module.css';
 import TabBar from './components/TabBar/TabBar.jsx';
 import ReportForm from './components/ReportForm/ReportForm.jsx';
@@ -20,7 +20,7 @@ export default function App() {
 
   useEffect(() => { fetchRecent(); }, [fetchRecent]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (mainRef.current) mainRef.current.scrollTop = 0;
   }, [view]);
 
