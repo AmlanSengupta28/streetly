@@ -195,12 +195,16 @@ export default function RoadPicker({ center, onRoadSelect, locationLabel }) {
         return;
       }
 
-      const pts = await getRoadGeometry(wayId, name, lat, lng, ctrl.signal);
+      const timeout = new Promise((resolve) => setTimeout(() => resolve([]), 3000));
+      const pts = await Promise.race([
+        getRoadGeometry(wayId, name, lat, lng, ctrl.signal),
+        timeout,
+      ]);
       if (ctrl.signal.aborted) return;
 
-      setPolyline(pts);
+      if (pts.length) setPolyline(pts);
       onRoadSelect({ name, polyline: pts, lat, lng });
-      setTimeout(() => setClosing(true), 1000);
+      setTimeout(() => setClosing(true), pts.length ? 1000 : 0);
     } catch (e) {
       if (e.name === 'AbortError') return;
       setErr('Could not load road data. Check your connection.');
