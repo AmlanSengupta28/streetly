@@ -1,6 +1,6 @@
 .mapWrap {
-  width: 100%;
   height: calc(100vh - 230px);
+  margin: 0 8px;
   border-radius: var(--radius);
   overflow: hidden;
 }
