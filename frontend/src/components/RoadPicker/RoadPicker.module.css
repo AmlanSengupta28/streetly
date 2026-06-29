@@ -87,7 +87,7 @@
 /* ── Map container ───────────────────────────────────── */
 .mapWrap {
   height: 220px;
-  margin: 0 8px;
+  margin: 0 16px;
   border-radius: 10px;
   overflow: hidden;
   border: 1.5px solid var(--line);
