@@ -3,6 +3,7 @@ import { motion, useMotionValue, useSpring, useMotionValueEvent } from 'framer-m
 import styles from './ReportForm.module.css';
 import PhotoUpload from '../PhotoUpload/PhotoUpload.jsx';
 import RoadPicker from '../RoadPicker/RoadPicker.jsx';
+import { useGeolocation } from '../../hooks/useGeolocation.js';
 import { ISSUES } from '../../constants/categories.js';
 import { api } from '../../api/client.js';
 
@@ -104,6 +105,8 @@ function fadeUp(delay = 0) {
 }
 
 export default function ReportForm({ onPublished, showToast }) {
+  const { location: liveLocation, status: locStatus, areaGuess, locate } = useGeolocation();
+  const [locMode, setLocMode] = useState('search'); // 'search' | 'live'
   const [roadScore, setRoadScore] = useState(null);
   const [areaLabel, setAreaLabel] = useState('');
   const [issues, setIssues] = useState(new Set());
@@ -129,6 +132,16 @@ export default function ReportForm({ onPublished, showToast }) {
   }, [roadScore, scoreMotionVal]);
 
   useMotionValueEvent(springScore, 'change', (v) => setDisplayScore(Math.min(100, Math.max(0, Math.round(v)))));
+
+  useEffect(() => {
+    if (areaGuess && locMode === 'live' && !areaLabel) setAreaLabel(areaGuess);
+  }, [areaGuess, locMode, areaLabel]);
+
+  function handleLocModeSwitch(mode) {
+    setLocMode(mode);
+    setPickedRoad(null);
+    if (mode === 'live' && locStatus === 'idle') locate();
+  }
 
   function handleIssueToggle(key) {
     setIssues((prev) => {
@@ -167,19 +180,20 @@ export default function ReportForm({ onPublished, showToast }) {
   }
 
   function resetForm() {
-    setRoadScore(null); setAreaLabel(''); setIssues(new Set());
+    setLocMode('search'); setRoadScore(null); setAreaLabel(''); setIssues(new Set());
     setOthersText(''); setComment(''); setPhotoUrl(null); setPickedRoad(null);
     setManualLocation(null); setLocSearch(''); setLocResults([]);
     setMapKey((k) => k + 1); scoreMotionVal.set(0);
   }
 
   async function handleSubmit() {
-    if (!manualLocation) { showToast('Search and select your road first.'); return; }
+    const effectiveLoc = locMode === 'search' ? manualLocation : liveLocation;
+    if (!effectiveLoc) { showToast(locMode === 'search' ? 'Search and select your road first.' : 'Detect your location first.'); return; }
     if (roadScore === null) { showToast('Rate the road first.'); return; }
     setSubmitting(true);
     try {
-      const reportLat = pickedRoad?.lat ?? manualLocation.lat;
-      const reportLng = pickedRoad?.lng ?? manualLocation.lng;
+      const reportLat = pickedRoad?.lat ?? effectiveLoc.lat;
+      const reportLng = pickedRoad?.lng ?? effectiveLoc.lng;
       const extraNote = issues.has('others') && othersText.trim() ? `Other: ${othersText.trim()}` : '';
       const fullComment = [comment.trim(), extraNote].filter(Boolean).join('\n');
       const report = await api.createReport({
@@ -198,7 +212,7 @@ export default function ReportForm({ onPublished, showToast }) {
     }
   }
 
-  const effectiveLocation = manualLocation;
+  const effectiveLocation = locMode === 'search' ? manualLocation : liveLocation;
   const fillPct = `${roadScore ?? 0}%`;
   const label = scoreLabel(roadScore);
 
@@ -213,36 +227,80 @@ export default function ReportForm({ onPublished, showToast }) {
 
         <motion.div className={styles.section} {...fadeUp(0.12)}>
           <p className={styles.sectionLabel}>Road Location</p>
-          {!manualLocation && (
-            <div className={styles.locSearchWrap}>
-              <div className={styles.locSearchBox}>
-                <input
-                  type="text"
-                  className={styles.locSearchInput}
-                  placeholder="e.g. Bandra, Koramangala, Connaught Place…"
-                  value={locSearch}
-                  onChange={(e) => handleLocSearch(e.target.value)}
-                />
-                {locSearching && <span className={styles.locSearchSpinner} />}
-              </div>
-              {locResults.length > 0 && (
-                <ul className={styles.locResults}>
-                  {locResults.map((r, i) => (
-                    <li key={i} className={styles.locResult} onClick={() => handleLocPick(r)}>
-                      {r.display_name.split(',').slice(0, 3).join(', ')}
-                    </li>
-                  ))}
-                </ul>
+
+          <div className={styles.locTabs}>
+            <button
+              type="button"
+              className={`${styles.locTab} ${locMode === 'search' ? styles.locTabActive : ''}`}
+              onClick={() => handleLocModeSwitch('search')}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              className={`${styles.locTab} ${locMode === 'live' ? styles.locTabActive : ''}`}
+              onClick={() => handleLocModeSwitch('live')}
+            >
+              Live Location
+            </button>
+          </div>
+
+          {locMode === 'search' && (
+            <>
+              {!manualLocation && (
+                <div className={styles.locSearchWrap}>
+                  <div className={styles.locSearchBox}>
+                    <input
+                      type="text"
+                      className={styles.locSearchInput}
+                      placeholder="e.g. Bandra, Koramangala, Connaught Place…"
+                      value={locSearch}
+                      onChange={(e) => handleLocSearch(e.target.value)}
+                    />
+                    {locSearching && <span className={styles.locSearchSpinner} />}
+                  </div>
+                  {locResults.length > 0 && (
+                    <ul className={styles.locResults}>
+                      {locResults.map((r, i) => (
+                        <li key={i} className={styles.locResult} onClick={() => handleLocPick(r)}>
+                          {r.display_name.split(',').slice(0, 3).join(', ')}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               )}
-            </div>
+              {manualLocation && (
+                <RoadPicker
+                  key={mapKey}
+                  center={manualLocation}
+                  locationLabel={areaLabel.split(',')[0].trim()}
+                  onRoadSelect={(road) => { setPickedRoad(road); if (road.name) setAreaLabel(road.name); }}
+                />
+              )}
+            </>
           )}
-          {manualLocation && effectiveLocation && (
-            <RoadPicker
-              key={mapKey}
-              center={effectiveLocation}
-              locationLabel={areaLabel.split(',')[0].trim()}
-              onRoadSelect={(road) => { setPickedRoad(road); if (road.name) setAreaLabel(road.name); }}
-            />
+
+          {locMode === 'live' && (
+            <>
+              {locStatus === 'denied' && (
+                <p className={styles.locHint}>Location blocked — enable it in browser settings.</p>
+              )}
+              {locStatus === 'locating' && (
+                <div className={styles.locRow}>
+                  <span className={styles.spinner} />
+                  <span className={styles.locText}>Finding your location…</span>
+                </div>
+              )}
+              {locStatus === 'success' && liveLocation && (
+                <RoadPicker
+                  key={`live-${mapKey}`}
+                  center={liveLocation}
+                  locationLabel={areaLabel.split(',')[0].trim()}
+                  onRoadSelect={(road) => { setPickedRoad(road); if (road.name) setAreaLabel(road.name); }}
+                />
+              )}
+            </>
           )}
         </motion.div>
 

@@ -16,7 +16,31 @@
 .sectionLabel { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--label); margin: 0 0 14px; }
 .optional { font-weight: 400; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--label); }
 
-/* ── Location ────────────────────────────────────────── */
+/* ── Location tabs ───────────────────────────────────── */
+.locTabs {
+  display: flex; gap: 4px; margin-bottom: 14px;
+  background: var(--surface-2); border-radius: 10px; padding: 4px;
+}
+.locTab {
+  flex: 1; padding: 8px; border: none; border-radius: 7px;
+  font-size: 13px; font-weight: 500; font-family: var(--font-body);
+  color: var(--ink-soft); background: transparent; cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.locTabActive { background: #ffffff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+/* ── Location GPS ─────────────────────────────────────── */
+.locRow { display: flex; align-items: center; gap: 9px; padding: 4px 0; }
+.locText { font-size: 15px; color: var(--ink-soft); }
+.locHint { font-size: 13px; color: var(--bad); margin: 8px 0 0; }
+.spinner {
+  width: 14px; height: 14px; border: 2px solid var(--line);
+  border-top-color: var(--ink); border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+
+/* ── Location search ──────────────────────────────────── */
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Manual location search (shown when GPS denied) ─── */
